@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Natijalar — Results Showcase (preview)</title>
+
+<!-- Manrope -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Arm animations only when motion is allowed (prevents flash for reduced-motion users) -->
+<script>
+  if (!window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('rs-anim');
+  }
+</script>
+
+<style>
+/* =========================================================================
+   RESULTS SHOWCASE  —  self-contained, all styles scoped under .rs
+   Palette = KlientBoost
+   ========================================================================= */
+.rs{
+  --rs-bg:#FFFFFF;
+  --rs-navy:#515979;
+  --rs-head:#2E3347;
+  --rs-green:#3CB48C;
+  --rs-lgreen:#7DDF96;
+  --rs-amber:#FBB040;
+  --rs-sky:#378ADD;
+  --rs-coral:#EF7D7D;
+  --rs-muted:#7E869C;
+  --rs-border:#EAEDF4;
+
+  font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--rs-bg);
+  color:var(--rs-head);
+  padding:88px 24px 120px;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+.rs *{box-sizing:border-box;}
+
+/* ---------- heading (matches the main-page section style) ---------- */
+.rs__head{max-width:760px;margin:0 auto;text-align:center;}
+.rs__title{
+  margin:0;
+  color:var(--rs-navy);
+  font-weight:800;
+  font-size:clamp(1.55rem,5.2vw,2.7rem);
+  line-height:1.16;
+  letter-spacing:-.01em;
+  text-wrap:balance;
+}
+.rs__title-accent{
+  color:var(--rs-coral);
+  text-decoration:underline;
+  text-decoration-thickness:4px;
+  text-underline-offset:6px;
+  white-space:nowrap;
+}
+.rs__sub{
+  margin:18px auto 0;
+  max-width:600px;
+  color:var(--rs-muted);
+  font-weight:400;
+  font-size:clamp(1rem,1.6vw,1.15rem);
+  line-height:1.6;
+}
+
+/* ---------- stage ---------- */
+.rs__stage{
+  position:relative;
+  max-width:1120px;
+  min-height:620px;
+  margin:72px auto 0;
+}
+
+/* connector lines layer */
+.rs__lines{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+}
+.rs__line{
+  fill:none;
+  stroke:var(--rs-navy);
+  stroke-width:2;
+  stroke-opacity:.55;
+  stroke-linecap:round;
+}
+
+/* ---------- phones ---------- */
+.rs__phones{
+  position:absolute;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  z-index:2;
+}
+.rs__phone{
+  width:290px;
+  height:592px;
+  border-radius:54px;
+  padding:13px;
+  background:linear-gradient(145deg,#43474f,#2b2e35,#1a1c21);
+  box-shadow:0 40px 80px -22px rgba(46,51,71,.45), 0 12px 34px -14px rgba(46,51,71,.35);
+}
+.rs__phone--main{position:relative;z-index:2;}
+.rs__phone--peek{
+  position:absolute;
+  top:0; left:0;
+  transform:translate(38px,30px) rotate(-9deg) scale(.95);
+  opacity:.42;
+  filter:saturate(.85);
+  z-index:1;
+}
+
+/* side buttons */
+.rs__btn{position:absolute;border-radius:4px;background:linear-gradient(180deg,#4b4f57,#23262c);}
+.rs__btn--action{left:-2px;top:118px;width:3px;height:26px;}
+.rs__btn--volup{left:-2px;top:166px;width:3px;height:48px;}
+.rs__btn--voldown{left:-2px;top:226px;width:3px;height:48px;}
+.rs__btn--power{right:-2px;top:176px;width:3px;height:74px;}
+
+/* screen */
+.rs__screen{
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:42px;
+  overflow:hidden;
+  background:#000;
+}
+
+/* "video" stand-in for the Reel */
+.rs__reel{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(120% 80% at 20% 0%, rgba(125,223,150,.55), transparent 55%),
+    radial-gradient(120% 90% at 90% 25%, rgba(55,138,221,.55), transparent 55%),
+    radial-gradient(140% 120% at 50% 110%, rgba(60,180,140,.6), transparent 60%),
+    linear-gradient(160deg,#2b7a6b 0%,#37618f 45%,#3a3f63 100%);
+}
+.rs__reel::after{ /* vignette */
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(120% 90% at 50% 35%, transparent 45%, rgba(0,0,0,.5) 100%);
+}
+.rs__reel--alt{
+  background:
+    radial-gradient(120% 80% at 80% 0%, rgba(251,176,64,.5), transparent 55%),
+    radial-gradient(120% 90% at 10% 30%, rgba(239,125,125,.5), transparent 55%),
+    linear-gradient(160deg,#3a3f63,#515979 60%,#2b2e35);
+}
+
+/* dynamic island */
+.rs__island{
+  position:absolute;
+  top:11px;left:50%;
+  transform:translateX(-50%);
+  width:104px;height:31px;
+  background:#000;
+  border-radius:18px;
+  z-index:6;
+}
+
+/* status bar */
+.rs__statusbar{
+  position:absolute;top:0;left:0;right:0;
+  height:50px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 26px 0;
+  color:#fff;
+  z-index:5;
+}
+.rs__time{font-weight:700;font-size:15px;letter-spacing:.02em;}
+.rs__status-icons{display:flex;align-items:center;gap:7px;}
+
+/* reels overlay */
+.rs__reel-ui{position:absolute;inset:0;z-index:4;color:#fff;}
+.rs__reels-top{
+  position:absolute;top:58px;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;
+}
+.rs__reels-label{font-weight:800;font-size:20px;text-shadow:0 1px 4px rgba(0,0,0,.35);}
+
+/* right action rail */
+.rs__rail{
+  position:absolute;right:10px;bottom:118px;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+.rs__rail-item{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:none;border:0;padding:0;margin:0;color:#fff;cursor:pointer;
+  font-family:inherit;font-size:12px;font-weight:600;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.4));
+}
+.rs__disc{
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,#7DDF96,#378ADD,#EF7D7D);
+  border:2px solid rgba(255,255,255,.85);
+}
+
+/* bottom-left info */
+.rs__reel-info{
+  position:absolute;left:16px;right:78px;bottom:74px;
+  text-shadow:0 1px 4px rgba(0,0,0,.4);
+}
+.rs__user{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.rs__avatar{
+  width:30px;height:30px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(135deg,#FBB040,#EF7D7D 55%,#378ADD);
+  border:2px solid #fff;
+}
+.rs__handle{font-weight:700;font-size:14px;}
+.rs__follow{
+  font-family:inherit;font-weight:700;font-size:12px;color:#fff;
+  background:transparent;border:1px solid rgba(255,255,255,.9);
+  border-radius:8px;padding:4px 10px;cursor:pointer;
+}
+.rs__caption{margin:0 0 9px;font-size:13px;line-height:1.4;font-weight:500;}
+.rs__audio{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;}
+.rs__audio svg{flex:0 0 auto;}
+
+/* bottom nav */
+.rs__nav{
+  position:absolute;left:0;right:0;bottom:0;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 16px 8px;
+  background:linear-gradient(0deg,rgba(0,0,0,.55),transparent);
+  z-index:5;
+}
+.rs__nav svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));}
+
+/* ---------- sticker ---------- */
+.rs__sticker{
+  position:absolute;
+  top:-6px;left:58%;
+  transform:rotate(6deg);
+  z-index:4;
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--rs-amber);
+  color:#5A3A00;
+  font-weight:800;font-size:.82rem;
+  padding:9px 14px;
+  border-radius:9px;
+  box-shadow:0 14px 26px -10px rgba(251,176,64,.7);
+}
+.rs__sticker svg{flex:0 0 auto;}
+
+/* ---------- win cards ---------- */
+.rs__card{
+  position:absolute;
+  width:212px;
+  z-index:3;
+}
+.rs__card-in{
+  display:flex;align-items:center;gap:13px;
+  background:#fff;
+  border:1px solid var(--rs-border);
+  border-radius:18px;
+  padding:15px 16px;
+  box-shadow:0 18px 40px -22px rgba(46,51,71,.4), 0 4px 12px -8px rgba(46,51,71,.25);
+}
+.rs__icon{
+  flex:0 0 auto;
+  width:44px;height:44px;
+  border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;
+}
+.rs__icon--green{background:var(--rs-green);}
+.rs__icon--sky{background:var(--rs-sky);}
+.rs__icon--coral{background:var(--rs-coral);}
+.rs__icon--amber{background:var(--rs-amber);}
+.rs__icon--navy{background:var(--rs-navy);}
+.rs__icon--lgreen{background:var(--rs-lgreen);}
+.rs__card-body{display:flex;flex-direction:column;line-height:1.15;}
+.rs__num{
+  font-weight:800;font-size:1.45rem;color:var(--rs-navy);
+  font-variant-numeric:tabular-nums;
+}
+.rs__label{margin-top:3px;font-size:.78rem;color:var(--rs-muted);font-weight:600;}
+
+/* card positions (desktop) */
+.rs__card--1{left:0;top:34px;}
+.rs__card--2{left:0;top:262px;}
+.rs__card--3{left:0;top:490px;}
+.rs__card--4{right:0;top:34px;}
+.rs__card--5{right:0;top:262px;}
+.rs__card--6{right:0;top:490px;}
+
+/* ---------- focus + reveal hiding ---------- */
+.rs button:focus-visible,
+.rs a:focus-visible{
+  outline:3px solid var(--rs-sky);
+  outline-offset:3px;
+  border-radius:8px;
+}
+/* Only hide when JS animation is armed; reduced-motion/no-JS keep it visible */
+html.rs-anim .rs__reveal{opacity:0;}
+
+/* ---------- responsive ---------- */
+@media (max-width:880px){
+  .rs{padding:56px 20px 84px;}
+  .rs__head{padding:0 4px;}
+  .rs__title{line-height:1.2;}
+  .rs__title-accent{text-decoration-thickness:3px;text-underline-offset:4px;}
+  .rs__sub{margin-top:14px;}
+  .rs__lines,.rs__phone--peek{display:none;}
+  .rs__stage{
+    min-height:0;
+    margin-top:48px;
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+  }
+  .rs__sticker{position:static;order:0;transform:none;margin:0 auto;}
+  .rs__phones{position:static;transform:none;order:1;}
+  .rs__card{
+    position:static;inset:auto;order:2;
+    width:100%;max-width:340px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== DROP-IN SECTION STARTS ===================== -->
+<section class="rs" aria-labelledby="rs-title">
+  <header class="rs__head">
+    <h2 class="rs__title rs__reveal" id="rs-title">Kontent emas — <span class="rs__title-accent">sotuv yaratamiz</span></h2>
+    <p class="rs__sub rs__reveal">Har bir Reels ortida real raqamlar turadi. Mana mijozlarimiz haqiqiy natijalari — $300 byudjetdan boshlab.</p>
+  </header>
+
+  <div class="rs__stage">
+
+    <!-- connector lines (paths' d computed in JS so they track card/phone positions) -->
+    <svg class="rs__lines" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+      <path class="rs__line"></path><path class="rs__line"></path><path class="rs__line"></path>
+      <path class="rs__line"></path><path class="rs__line"></path><path class="rs__line"></path>
+    </svg>
+
+    <!-- sticky note -->
+    <div class="rs__sticker rs__reveal" role="img" aria-label="100% real natija">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5A3A00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      100% real natija
+    </div>
+
+    <!-- phones -->
+    <div class="rs__phones">
+      <!-- depth: peek phone behind -->
+      <div class="rs__phone rs__phone--peek" aria-hidden="true">
+        <div class="rs__screen"><div class="rs__reel rs__reel--alt"></div></div>
+      </div>
+
+      <!-- main iPhone -->
+      <div class="rs__phone rs__phone--main rs__reveal">
+        <span class="rs__btn rs__btn--action"></span>
+        <span class="rs__btn rs__btn--volup"></span>
+        <span class="rs__btn rs__btn--voldown"></span>
+        <span class="rs__btn rs__btn--power"></span>
+
+        <div class="rs__screen">
+          <!-- TODO: replace this .rs__reel gradient with Durdona's real Reel:
+               <video class="rs__reel" muted autoplay loop playsinline poster="reel-poster.jpg">
+                 <source src="durdona-reel.mp4" type="video/mp4">
+               </video> -->
+          <div class="rs__reel" aria-hidden="true"></div>
+
+          <div class="rs__island" aria-hidden="true"></div>
+
+          <div class="rs__statusbar" aria-hidden="true">
+            <span class="rs__time">9:41</span>
+            <span class="rs__status-icons">
+              <!-- signal -->
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+              <!-- wifi -->
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1 3.5C4 1 13 1 16 3.5M3.5 6C6 4 11 4 13.5 6M6 8.5c1.5-1.2 3.5-1.2 5 0"/><circle cx="8.5" cy="11" r=".6" fill="#fff" stroke="none"/></svg>
+              <!-- battery -->
+              <svg width="26" height="13" viewBox="0 0 26 13" fill="none" aria-hidden="true"><rect x="1" y="1" width="22" height="11" rx="3" stroke="#fff" stroke-opacity=".6" stroke-width="1.2"/><rect x="3" y="3" width="16" height="7" rx="1.5" fill="#fff"/><rect x="24" y="4.5" width="1.8" height="4" rx="1" fill="#fff" fill-opacity=".6"/></svg>
+            </span>
+          </div>
+
+          <!-- Instagram Reels UI -->
+          <div class="rs__reel-ui">
+            <div class="rs__reels-top">
+              <span class="rs__reels-label">Reels</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+
+            <div class="rs__rail">
+              <button class="rs__rail-item" type="button" aria-label="Like, 24 ming">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                <span>24k</span>
+              </button>
+              <button class="rs__rail-item" type="button" aria-label="Komment, 980">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-4.2A8.4 8.4 0 0 1 21 11.5z"/></svg>
+                <span>980</span>
+              </button>
+              <button class="rs__rail-item" type="button" aria-label="Ulashish, 3.1 ming">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+                <span>3.1k</span>
+              </button>
+              <button class="rs__rail-item" type="button" aria-label="Boshqa amallar">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+              </button>
+              <span class="rs__disc" aria-hidden="true"></span>
+            </div>
+
+            <div class="rs__reel-info">
+              <div class="rs__user">
+                <span class="rs__avatar" aria-hidden="true"></span>
+                <span class="rs__handle">durdona__erkinovna</span>
+                <button class="rs__follow" type="button">Kuzatish</button>
+              </div>
+              <p class="rs__caption">Shaxsiy brend = sotuv. $300 byudjet bilan $140,000 ✨</p>
+              <div class="rs__audio">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>
+                <span>durdona__erkinovna · Original audio</span>
+              </div>
+            </div>
+
+            <nav class="rs__nav" aria-label="Instagram navigatsiya (mockup)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11h14V9"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M9 4l1.8 5M15 4l1.8 5"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WIN CARDS ===== (numbers carry TODO: replace with Durdona's real stats) -->
+    <!-- LEFT -->
+    <article class="rs__card rs__card--1 rs__reveal" data-side="left">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--green" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 7-7"/><path d="M16 7h5v5"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="140000" data-prefix="$">$140,000</span>
+          <span class="rs__label">sotuv · $300 byudjet bilan</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="rs__card rs__card--2 rs__reveal" data-side="left">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--sky" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="25000" data-prefix="+">+25,000</span>
+          <span class="rs__label">followers · 3 oyda</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="rs__card rs__card--3 rs__reveal" data-side="left">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--coral" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 5v14l11-7z"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="1.2" data-dec="1" data-suffix="M">1.2M</span>
+          <span class="rs__label">Reels ko'rishlar</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- RIGHT -->
+    <article class="rs__card rs__card--4 rs__reveal" data-side="right">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--amber" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M9 15a2.5 2.5 0 0 0 2.5 1.5h1A2 2 0 0 0 13 12.7a2 2 0 0 1 0-3.4 2.4 2.4 0 0 0-1.5-.8h-1A2.5 2.5 0 0 0 9 9"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="10000" data-prefix="$">$10,000</span>
+          <span class="rs__label">daromad · $30 byudjet bilan</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="rs__card rs__card--5 rs__reveal" data-side="right">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--navy" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="17" data-prefix="+" data-suffix="%">+17%</span>
+          <span class="rs__label">konversiya · so'nggi oy</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="rs__card rs__card--6 rs__reveal" data-side="right">
+      <div class="rs__card-in">
+        <span class="rs__icon rs__icon--lgreen" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
+        <div class="rs__card-body">
+          <!-- TODO: replace with Durdona's real stat -->
+          <span class="rs__num" data-to="40" data-prefix="+">+40</span>
+          <span class="rs__label">yangi mijozlar</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+<!-- ====================== DROP-IN SECTION ENDS ====================== -->
+
+<!-- GSAP + ScrollTrigger (cdnjs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+        integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+(function(){
+  var section = document.querySelector('.rs');
+  if(!section) return;
+
+  var reduce  = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mqDesk  = window.matchMedia ? matchMedia('(min-width:881px)') : {matches:true};
+  var stage   = section.querySelector('.rs__stage');
+  var phone   = section.querySelector('.rs__phone--main');
+  var cards   = Array.prototype.slice.call(section.querySelectorAll('.rs__card'));
+  var nums    = Array.prototype.slice.call(section.querySelectorAll('.rs__num'));
+  var lines   = section.querySelector('.rs__lines');
+  var paths   = Array.prototype.slice.call(section.querySelectorAll('.rs__line'));
+
+  /* ---------- number formatting / count-up ---------- */
+  function format(el, val){
+    var dec = parseInt(el.dataset.dec || '0', 10);
+    var n = (dec ? Number(val) : Math.round(val)).toLocaleString('en-US', {
+      minimumFractionDigits: dec, maximumFractionDigits: dec
+    });
+    return (el.dataset.prefix || '') + n + (el.dataset.suffix || '');
+  }
+  function setFinal(el){ el.textContent = format(el, parseFloat(el.dataset.to)); }
+  function countUp(el){
+    var to = parseFloat(el.dataset.to), start = null, dur = 1400;
+    function step(t){
+      if(start === null) start = t;
+      var p = Math.min(1, (t - start) / dur);
+      var e = 1 - Math.pow(1 - p, 3);            // easeOutCubic
+      el.textContent = format(el, to * e);
+      if(p < 1) requestAnimationFrame(step); else setFinal(el);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- connector lines (kept aligned with real card/phone boxes) ---------- */
+  function drawLines(){
+    if(!mqDesk.matches || !phone){ return; }
+    var sb = stage.getBoundingClientRect();
+    lines.setAttribute('viewBox', '0 0 ' + sb.width + ' ' + sb.height);
+    var pb = phone.getBoundingClientRect();
+    var pcx = pb.left - sb.left + pb.width / 2;
+    cards.forEach(function(card, i){
+      var cb = card.getBoundingClientRect();
+      var left = card.dataset.side === 'left';
+      var ax = (left ? cb.right : cb.left) - sb.left;   // card edge facing phone
+      var ay = cb.top - sb.top + cb.height / 2;
+      var tx = pcx + (left ? -pb.width * 0.42 : pb.width * 0.42);
+      var ty = pb.top - sb.top + pb.height * (0.28 + 0.22 * (i % 3)); // fan toward phone
+      var mx = ax + (tx - ax) * 0.5;
+      paths[i].setAttribute('d', 'M ' + ax + ' ' + ay + ' C ' + mx + ' ' + ay + ', ' + mx + ' ' + ty + ', ' + tx + ' ' + ty);
+    });
+  }
+
+  /* ---------- no motion: everything static at final state ---------- */
+  if(reduce || !window.gsap){
+    document.documentElement.classList.remove('rs-anim'); // reveal items become visible
+    nums.forEach(setFinal);
+    drawLines();
+    window.addEventListener('resize', drawLines);
+    return;
+  }
+
+  /* ---------- animated path ---------- */
+  gsap.registerPlugin(ScrollTrigger);
+
+  var reveals = Array.prototype.slice.call(section.querySelectorAll('.rs__reveal'));
+  var heads   = Array.prototype.slice.call(section.querySelectorAll('.rs__head .rs__reveal'));
+  var sticker = section.querySelector('.rs__sticker');
+
+  gsap.set(reveals, { y: 40 });
+  gsap.set(sticker, { y: 10, scale: 0.6 });
+
+  ScrollTrigger.create({
+    trigger: stage,
+    start: 'top 70%',
+    once: true,
+    onEnter: function(){
+      var tl = gsap.timeline();
+      tl.to(heads,   { autoAlpha:1, y:0, duration:0.6, stagger:0.08, ease:'power2.out' })
+        .to(phone,   { autoAlpha:1, y:0, duration:0.6, ease:'power2.out' }, '-=0.3')
+        .to(sticker, { autoAlpha:1, y:0, scale:1, duration:0.55, ease:'back.out(1.7)' }, '-=0.3')
+        .to(cards,   { autoAlpha:1, y:0, duration:0.5, stagger:0.1, ease:'power2.out',
+                       onComplete: drawLines }, '-=0.3');
+      nums.forEach(countUp);
+      // draw progressively as cards settle too
+      gsap.delayedCall(0.2, drawLines);
+    }
+  });
+
+  /* ---------- desktop parallax (scrub), alternating ---------- */
+  if(mqDesk.matches){
+    cards.forEach(function(card, i){
+      var inner = card.querySelector('.rs__card-in');
+      gsap.to(inner, {
+        y: (i % 2 ? 1 : -1) * 30,
+        ease: 'none',
+        scrollTrigger: { trigger: stage, start: 'top bottom', end: 'bottom top', scrub: true,
+                         onUpdate: drawLines }
+      });
+    });
+  }
+
+  /* keep lines aligned */
+  drawLines();
+  window.addEventListener('resize', drawLines);
+  window.addEventListener('load', drawLines);
+})();
+</script>
+
+</body>
+</html>

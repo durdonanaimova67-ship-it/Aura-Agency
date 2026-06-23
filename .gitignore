@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# local editing backups
+*.bak
+
+# logs
+*.log
+
+# original (uncompressed) media kept locally, not deployed
+_media-originals/
+
+# scraper mirrors not used by the deployed homepage (large)
+klientboost-site/wp.klientboost.com/
+klientboost-site/kite.klientboost.com/
+
+# vercel / OS
+.vercel/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,60 @@
+/* ------------------------------------------------------------------
+   Hero "manila folder" animated eyes
+   ------------------------------------------------------------------
+   The real klientboost.com hero plays a Lottie animation on top of a
+   static folder illustration. That Lottie lives in a JS chunk that is
+   not part of this static mirror, so:
+     1. the folder placeholder is hidden (opacity:0) waiting for a
+        Lottie that never loads -> we force it visible again, and
+     2. we draw our own blinking / looking-around eyes over it.
+   ------------------------------------------------------------------ */
+
+/* 1. Reveal the hero folder illustration that the SSR markup hid.
+      Both the wrapper (waiting for a JS "loaded" class) and the inner
+      placeholder image (waiting for the Lottie) start at opacity:0. */
+.ManilaFolderHero-module--illustration__wrapper--22ab2 {
+  opacity: 1 !important;
+  transform: none !important;
+}
+.ManilaFolderHero-module--clouds--0a69e {
+  opacity: 1 !important;
+}
+.ManilaFolderHero-module--illustration--7c447
+  .Animation-module--placeholder--00a16.Animation-module--isHidden--b2b68 {
+  opacity: 1 !important;
+}
+
+/* 2. Overlay container: sits exactly on top of the folder image. */
+.kb-eyes-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* never block clicks on the hero */
+  overflow: visible;
+}
+
+/* The whole eye (white + pupil) scales vertically to "blink". */
+.kb-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 90ms ease-in-out;
+  will-change: transform;
+}
+.kb-eye.kb-blink {
+  transform: scaleY(0.08);
+}
+
+/* The pupil glides toward whatever the eyes are looking at. */
+.kb-pupil {
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Respect users who prefer no motion: keep eyes, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .kb-eye,
+  .kb-pupil {
+    transition: none;
+  }
+}
