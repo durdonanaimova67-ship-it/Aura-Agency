@@ -33,6 +33,7 @@ const TYPES = {
   '.ogv': 'video/ogg',
   '.mp3': 'audio/mpeg',
   '.m4a': 'audio/mp4',
+  '.ogg': 'audio/ogg',
 };
 
 // Serve a file, honoring HTTP Range requests (required for <video> playback/seeking).

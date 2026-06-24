@@ -18,11 +18,11 @@
   'use strict';
 
   var FACES = [
-    { src: 'durdona-images/team/durdona-sticker.png', alt: 'Durdona' },
-    { src: 'durdona-images/team/elbek-sticker.png', alt: 'Elbek' },
-    { src: 'durdona-images/team/arofat-sticker.png', alt: 'Arofat' },
-    { src: 'durdona-images/team/muhammadaziz-sticker.png', alt: 'Muhammadaziz' },
-    // { src: 'durdona-images/team/NAME.png', alt: 'Name' },
+    { src: 'durdona-images/team/durdona-sticker.webp', alt: 'Durdona' },
+    { src: 'durdona-images/team/elbek-sticker.webp', alt: 'Elbek' },
+    { src: 'durdona-images/team/arofat-sticker.webp', alt: 'Arofat' },
+    { src: 'durdona-images/team/muhammadaziz-sticker.webp', alt: 'Muhammadaziz' },
+    // { src: 'durdona-images/team/NAME.webp', alt: 'Name' },
   ];
 
   var SPEED = 55;            // px/sec
