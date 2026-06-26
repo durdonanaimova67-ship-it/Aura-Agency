@@ -1,6 +1,14 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+
+// When a file isn't in the local mirror, fetch it once from the live site,
+// save it to disk (so the mirror becomes self-contained over time), then serve
+// it. This keeps Gatsby's lazily-loaded chunks / page-data working offline after
+// the first visit. Set MIRROR_FALLBACK=0 to disable.
+const LIVE_ORIGIN = 'https://www.klientboost.com';
+const FALLBACK = process.env.MIRROR_FALLBACK !== '0';
 
 // The homepage lives under www.klientboost.com and requests its assets at
 // absolute paths like "/styles.css", "/static/...", "/page-data/...".
@@ -8,7 +16,7 @@ const path = require('path');
 // for cross-site links (../klientboost.com/...).
 const SITE_ROOT = path.join(__dirname, 'klientboost-site');
 const ROOT = path.join(SITE_ROOT, 'www.klientboost.com');
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -72,6 +80,52 @@ const serveFile = (filePath, stat, req, res) => {
   fs.createReadStream(filePath).pipe(res);
 };
 
+// Fetch a missing resource from the live site, cache it to disk under the web
+// root, then serve it. `rawUrl` keeps the original query string; `urlPath` is the
+// decoded path used for the on-disk location.
+const fetchFromLive = (rawUrl, urlPath, req, res) => {
+  const liveUrl = LIVE_ORIGIN + rawUrl;
+  https
+    .get(
+      liveUrl,
+      {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+          Accept: '*/*',
+        },
+      },
+      (live) => {
+        if (live.statusCode !== 200) {
+          live.resume();
+          res.writeHead(live.statusCode || 404, { 'Content-Type': 'text/plain' });
+          res.end('404 (live ' + live.statusCode + '): ' + urlPath);
+          return;
+        }
+        const chunks = [];
+        live.on('data', (c) => chunks.push(c));
+        live.on('end', () => {
+          const body = Buffer.concat(chunks);
+          // Save into the served root so the next request is local.
+          const dest = path.join(ROOT, urlPath);
+          fs.mkdir(path.dirname(dest), { recursive: true }, () => {
+            fs.writeFile(dest, body, () => {});
+          });
+          const ext = path.extname(urlPath).toLowerCase();
+          const contentType =
+            TYPES[ext] || live.headers['content-type'] || 'application/octet-stream';
+          console.log(`  ↳ fetched from live: ${urlPath} (${body.length}B)`);
+          res.writeHead(200, { 'Content-Type': contentType, 'Content-Length': body.length });
+          res.end(body);
+        });
+      }
+    )
+    .on('error', (e) => {
+      res.writeHead(502, { 'Content-Type': 'text/plain' });
+      res.end('502 live fetch failed: ' + e.message);
+    });
+};
+
 const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
   if (urlPath === '/') urlPath = '/index.html';
@@ -81,6 +135,7 @@ const server = http.createServer((req, res) => {
 
   const tryServe = (i) => {
     if (i >= candidates.length) {
+      if (FALLBACK && req.method === 'GET') return fetchFromLive(req.url, urlPath, req, res);
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('404 Not Found: ' + urlPath);
       return;
