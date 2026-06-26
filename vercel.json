@@ -3,10 +3,6 @@
   "framework": null,
   "installCommand": "echo 'no dependencies to install'",
   "buildCommand": "echo 'static site - no build step'",
-  "outputDirectory": "klientboost-site",
-  "trailingSlash": true,
-  "rewrites": [
-    { "source": "/", "destination": "/www.klientboost.com/index.html" },
-    { "source": "/:path*", "destination": "/www.klientboost.com/:path*" }
-  ]
+  "outputDirectory": "klientboost-site/www.klientboost.com",
+  "trailingSlash": true
 }
